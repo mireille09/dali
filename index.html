@@ -187,8 +187,19 @@
 
   function loadDali() { renderCards('result-dali', WORKER_DATA); }
   
-  function loadNewComers() { renderCards('result-new', NEW_COMERS); }
+// 這裡填入你想要顯示的新進工號 (放在 function 外面或裡面都可以)
+const NEW_COMER_IDS = ["36074", "36075", "36076", "36077", "36078", "36079", "36080"]; 
 
+function loadNewComers() {
+    // 1. 從 WORKER_DATA (大資料庫) 中，過濾出工號符合的人
+    const newComers = WORKER_DATA.filter(worker => 
+        NEW_COMER_IDS.includes(worker.id.toString().trim())
+    );
+    
+    // 2. 調用渲染函式顯示照片
+    renderCards('result-new', newComers);
+}
+  
   function loadResigned() {
     const tbody = document.getElementById('resigned-tbody');
     tbody.innerHTML = RESIGNED_DATA.map(g => `
