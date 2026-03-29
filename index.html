@@ -202,13 +202,29 @@ function loadNewComers() {
   
   function loadResigned() {
     const tbody = document.getElementById('resigned-tbody');
-    tbody.innerHTML = RESIGNED_DATA.map(g => `
+    
+    // 1. 進行分組處理 (Group by Date + Site)
+    const groups = {};
+    RESIGNED_DATA.forEach(item => {
+        const key = `${item.date}_${item.site}`;
+        if (!groups[key]) {
+            groups[key] = { date: item.date, site: item.site, members: [] };
+        }
+        groups[key].members.push(item.member || (item.name ? `${item.id} ${item.name}` : ""));
+    });
+
+    // 2. 轉換為陣列並排序 (可選：依日期由新到舊)
+    const sortedGroups = Object.values(groups).sort((a, b) => b.date.localeCompare(a.date));
+
+    // 3. 渲染到表格
+    tbody.innerHTML = sortedGroups.map(g => `
       <tr>
         <td class="col-info">${g.date}<br>${g.site}</td>
-        <td class="col-members">${g.members.join('<br>')}</td>
+        <td class="col-members">${g.members.filter(m => m).join('<br>')}</td>
       </tr>
     `).join('');
-  }
+}
+
 
   function loadOffDuty() {
     const today = new Date().toISOString().slice(0,10).replace(/-/g,"/");
