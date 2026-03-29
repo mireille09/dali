@@ -22,12 +22,13 @@
     /* 導覽連結 */
     .nav-link { margin-top: 20px; padding-top: 15px; border-top: 1px solid #eee; font-size: 14px; line-height: 2.2; display: flex; flex-wrap: wrap; justify-content: center; }
     .nav-link a { color: #4a90e2; text-decoration: none; font-weight: bold; cursor: pointer; margin: 0 5px; white-space: nowrap; }
-    /* 專門把排班表連結設為綠色 */
-    .nav-duty { 
-    color: #27ae60 !important; 
-    font-weight: bold; 
-}
-
+    /* 讓連結內的文字變綠色，但保留圖示原本顏色 */
+    .nav-duty {
+    color: #2c3e50 !important; /* 這是圖示的顏色（深灰色） */
+    text-decoration: none;}
+    .nav-duty span {
+    color: #27ae60 !important; /* 這是「排班表」三個字的綠色 */
+    font-weight: bold;}
 
     /* 移工卡片通用容器 */
     #result-dali, #result-multi, #result-new {
@@ -141,7 +142,7 @@
     <a onclick="showPage('single')">🏠 單人</a>|<a onclick="showPage('multi')">🔍 複數</a>|
     <a onclick="showPage('new')">🌱 新進</a>|<span class="mobile-br"></span>
     <a onclick="showPage('resigned')">🚫 轉出</a>|<a onclick="showPage('dali')">🏢 大里一覽</a>|
-    <a href="duty.html" class="nav-duty">♚ 月曆</a>
+    <a href="duty.html" class="nav-duty">♚ <span>月曆</span></a>
   </div>
 
   <div id="off-duty-box">
