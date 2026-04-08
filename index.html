@@ -26,7 +26,17 @@
 
     /* 移工卡片容器：預設手機版 */
     .result-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; padding: 10px 0; width: 100%; }
-    .emp-card { background: #fff; border: 1px solid #eee; border-radius: 8px; padding: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); box-sizing: border-box; text-align: center; width: calc((100% - 15px) / 2); }
+    /* 修改後的移工卡片樣式 */
+.emp-card { 
+    background: #fff; 
+    border: 1px solid #7f8c8d; /* 深灰色 1px 細線 */
+    border-radius: 8px; 
+    padding: 8px; 
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05); /* 減輕陰影，讓深灰線條更明顯 */
+    box-sizing: border-box; 
+    text-align: center; 
+    width: calc((100% - 15px) / 2); 
+}
     .emp-card img { width: 100%; height: auto; aspect-ratio: 3 / 4; object-fit: cover; border-radius: 4px; }
     .emp-card .emp-name-tag { font-weight: bold; font-size: 14px; margin-top: 6px; border-bottom: 1px solid #f0f0f0; padding-bottom: 4px; overflow: hidden; text-overflow: ellipsis; }
 
