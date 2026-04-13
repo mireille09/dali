@@ -664,4 +664,5 @@ const RESIGNED_DATA = [
 ]
 }
 ];
-const NEW_COMER_IDS = ["36074", "36075", "36076", "36077", "36078", "36079", "36080", "31010"];
+
+const NEW_COMERS = [];
