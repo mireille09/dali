@@ -188,12 +188,10 @@ function showPage(p) {
     renderCards('result-display', res);
   }
 function loadNewComers() {
-    // 把 31010 直接加在最後面
-    const NEW_COMER_IDS = ["36074", "36075", "36076", "36077", "36078", "36079", "36080", "31010"];
-    const res = WORKER_DATA.filter(w => NEW_COMER_IDS.includes(w.id.toString().trim()));
+    const ids = ["31010", "36074", "36075", "36076", "36077", "36078", "36079", "36080"];
+    const res = WORKER_DATA.filter(w => ids.includes(w.id.toString().trim()));
     renderCards('result-new', res);
 }
-
   function loadResigned() {
     const tbody = document.getElementById('resigned-tbody');
     const groups = {};
