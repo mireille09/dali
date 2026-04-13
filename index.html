@@ -118,17 +118,10 @@
   </div>
   
 <div id="page-new" style="display:none;">
-    <!-- 3/13 分組區塊 -->
-    <h2 style="color: #27ae60;">🌱 03/13 新進同仁</h2>
-    <div id="result-new-0313" class="result-container"></div>
-
-    <hr style="margin: 30px 0; border: 0; border-top: 1px dashed #ccc;">
-
-    <!-- 4/13 分組區塊 -->
-    <h2 style="color: #e67e22;">🚀 04/13 新進同仁</h2>
-    <div id="result-new-0413" class="result-container"></div>
+    <h2 style="color: #27ae60;">🌱 新進同仁 (03/13 & 04/13)</h2>
+    <!-- 所有的卡片都會跑進下面這個 div -->
+    <div id="result-new" class="result-container"></div>
 </div>
-
 
   <div id="page-dali" style="display:none;">
     <h2 style="color: #2980b9;">🏢 大里工地員工</h2>
@@ -195,15 +188,10 @@ function showPage(p) {
     renderCards('result-display', res);
   }
 function loadNewComers() {
-    // 1. 處理 3/13 分組 (36074~36080)
-    const ids0313 = ["36074", "36075", "36076", "36077", "36078", "36079", "36080"];
-    const res0313 = WORKER_DATA.filter(w => ids0313.includes(w.id.toString().trim()));
-    renderCards('result-new-0313', res0313); // 這裡要對應 HTML 的 ID
-
-    // 2. 處理 4/13 分組 (31010)
-    const ids0413 = ["31010"];
-    const res0413 = WORKER_DATA.filter(w => ids0413.includes(w.id.toString().trim()));
-    renderCards('result-new-0413', res0413); // 這裡要對應 HTML 的 ID
+    // 把 31010 直接加在最後面
+    const NEW_COMER_IDS = ["36074", "36075", "36076", "36077", "36078", "36079", "36080", "31010"];
+    const res = WORKER_DATA.filter(w => NEW_COMER_IDS.includes(w.id.toString().trim()));
+    renderCards('result-new', res);
 }
 
   function loadResigned() {
