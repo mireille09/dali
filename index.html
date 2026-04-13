@@ -172,13 +172,13 @@ function loadNewComers() {
     
     // 2. 取得容器，在開頭補上 3/13 的標題
     const container = document.getElementById('result-new');
-    container.insertAdjacentHTML('afterbegin', '<div style="width:100%; color:#27ae60; font-weight:bold; margin:10px 0; font-size:18px;">🌱 03/13 抵達人員</div>');
+    container.insertAdjacentHTML('afterbegin', '<div style="width:100%; color:#27ae60; font-weight:bold; margin:10px 0; font-size:18px;">🌱 03/13 新進人員</div>');
 
     // 3. 找到 31010，並在它前面插入 4/13 的標題
     const cards = container.getElementsByClassName('emp-card');
     for (let card of cards) {
         if (card.innerText.includes('31010')) {
-            card.insertAdjacentHTML('beforebegin', '<div style="width:100%; color:#e67e22; font-weight:bold; margin:25px 0 10px 0; border-top:1px dashed #ccc; padding-top:15px; font-size:18px;">🚀 04/13 抵達人員</div>');
+            card.insertAdjacentHTML('beforebegin', '<div style="width:100%; color:#e67e22; font-weight:bold; margin:25px 0 10px 0; border-top:1px dashed #ccc; padding-top:15px; font-size:18px;">🚀 04/13 新進人員</div>');
         }
     }
 }
