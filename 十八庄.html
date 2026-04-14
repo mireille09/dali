@@ -20,4 +20,100 @@
         input:focus { border-color: #d32f2f; outline: none; background: #fffafa; }
         
         .subtotal { font-weight: bold; color: #555; }
-        .total-row { margin-top: 30px; text-align: right; padding: 20px; background: #fcf
+        .total-row { margin-top: 30px; text-align: right; padding: 20px; background: #fcfcfc; border-radius: 8px; font-size: 18px; }
+        .over-budget { color: #d32f2f; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🏮 十八庄媽祖行腳物資統計</h2>
+    
+    <div class="header-box">
+        <div class="header-item">總預算<br><span class="header-val">14,000</span></div>
+        <div class="header-item">目前花費<br><span id="totalDisplay" class="header-val">0</span></div>
+        <div class="header-item">剩餘餘額<br><span id="remainDisplay" class="header-val">14,000</span></div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th style="text-align: left;">品項</th>
+                <th width="15%">單價</th>
+                <th width="5%"></th>
+                <th width="15%">數量</th>
+                <th width="25%">金額 (小計)</th>
+            </tr>
+        </thead>
+        <tbody id="itemBody">
+            <tr class="item-row">
+                <td style="text-align: left;"><input type="text" value="寶礦利 (580ml)" style="text-align: left; width: 90%; border: none;"></td>
+                <td><input type="number" class="price" value="22" oninput="calculate()"></td>
+                <td>×</td>
+                <td><input type="number" class="qty" value="120" oninput="calculate()"></td>
+                <td><span class="subtotal">0</span></td>
+            </tr>
+            <tr class="item-row">
+                <td style="text-align: left;"><input type="text" value="純水 (600ml)" style="text-align: left; width: 90%; border: none;"></td>
+                <td><input type="number" class="price" value="10" oninput="calculate()"></td>
+                <td>×</td>
+                <td><input type="number" class="qty" value="120" oninput="calculate()"></td>
+                <td><span class="subtotal">0</span></td>
+            </tr>
+            <tr class="item-row">
+                <td style="text-align: left;"><input type="text" value="鳳梨酥" style="text-align: left; width: 90%; border: none;"></td>
+                <td><input type="number" class="price" value="45" oninput="calculate()"></td>
+                <td>×</td>
+                <td><input type="number" class="qty" value="150" oninput="calculate()"></td>
+                <td><span class="subtotal">0</span></td>
+            </tr>
+            <tr class="item-row">
+                <td style="text-align: left;"><input type="text" value="其他(雜支/糖果)" style="text-align: left; width: 90%; border: none;"></td>
+                <td><input type="number" class="price" value="2910" oninput="calculate()"></td>
+                <td>×</td>
+                <td><input type="number" class="qty" value="1" oninput="calculate()"></td>
+                <td><span class="subtotal">0</span></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="total-row">
+        <strong>總金額合計： NT$ <span id="finalTotal">0</span></strong>
+    </div>
+</div>
+
+<script>
+    function calculate() {
+        const rows = document.querySelectorAll('.item-row');
+        let totalAll = 0;
+        const budget = 14000;
+
+        rows.forEach(row => {
+            const price = parseFloat(row.querySelector('.price').value) || 0;
+            const qty = parseFloat(row.querySelector('.qty').value) || 0;
+            const subtotal = price * qty;
+            
+            row.querySelector('.subtotal').innerText = subtotal.toLocaleString();
+            totalAll += subtotal;
+        });
+
+        const remain = budget - totalAll;
+        
+        document.getElementById('finalTotal').innerText = totalAll.toLocaleString();
+        document.getElementById('totalDisplay').innerText = totalAll.toLocaleString();
+        document.getElementById('remainDisplay').innerText = remain.toLocaleString();
+
+        // 預算超支警示
+        if (remain < 0) {
+            document.getElementById('remainDisplay').classList.add('over-budget');
+        } else {
+            document.getElementById('remainDisplay').classList.remove('over-budget');
+        }
+    }
+
+    // 初始化計算
+    calculate();
+</script>
+
+</body>
+</html>
