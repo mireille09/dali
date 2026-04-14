@@ -25,28 +25,28 @@
         .sum-val { font-size: 16px; }
 
         /* 主內容區 */
-        .content { max-width: 900px; margin: 15px auto; padding: 0 10px; }
+        .content { max-width: 1000px; margin: 15px auto; padding: 0 10px; }
         table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; table-layout: fixed; }
-        th { background: #f8f8f8; color: #666; padding: 12px 2px; font-size: 13px; border-bottom: 2px solid #eee; }
-        td { padding: 10px 2px; border-bottom: 1px solid #eee; text-align: center; }
+        th { background: #f8f8f8; color: #666; padding: 12px 2px; font-size: 13px; border-bottom: 2px solid #eee; text-align: center; }
+        td { padding: 10px 2px; border-bottom: 1px solid #f1f1f1; text-align: center; }
         
         input { width: 90%; padding: 6px 2px; border: 1px solid #ddd; border-radius: 4px; text-align: center; font-size: 14px; }
         input:focus { border-color: var(--primary-red); outline: none; background: #fffafa; }
 
         /* 調整特定欄位寬度 */
-        .col-name { width: 30%; }
-        .col-unit { width: 45px; } /* 容納2位數 */
+        .col-name { width: 28%; }
+        .col-unit { width: 45px; } 
         .col-price { width: 70px; }
-        .col-qty { width: 50px; }  /* 縮小數量欄位 */
-        .col-sub { width: 90px; }
-        .col-note { width: auto; }
+        .col-qty { width: 50px; }  
+        .col-note { width: 20%; }
+        .col-sub { width: 95px; }
 
         .text-left { text-align: left; padding-left: 8px; }
         .text-right { text-align: right; padding-right: 12px; }
-        .v-line { border-right: 1px solid #eee; }
+        .v-line-left { border-left: 1px solid #eee; }
+        
         .subtotal { font-weight: bold; color: var(--primary-red); font-family: Consolas, monospace; }
 
-        /* 手機版 RWD */
         @media screen and (max-width: 600px) {
             thead { display: none; }
             table { table-layout: auto; }
@@ -55,20 +55,15 @@
                 border-bottom: 2px solid #f0f0f0; background: white; margin-bottom: 5px;
             }
             td { border: none; padding: 4px; flex: none; }
-            
-            /* 項目名稱與小計 */
             td:nth-child(1) { order: 1; flex: 2; text-align: left; }
-            td:nth-child(5) { order: 2; flex: 1; text-align: right; font-size: 16px; }
-            
-            /* 參數列 */
+            td:nth-child(6) { order: 2; flex: 1; text-align: right; font-size: 16px; }
             td:nth-child(2), td:nth-child(3), td:nth-child(4) { 
                 order: 3; flex: 1; font-size: 12px; display: flex; flex-direction: column; align-items: center;
             }
             td:nth-child(2)::before { content: "組"; color: #999; }
             td:nth-child(3)::before { content: "單價"; color: #999; }
             td:nth-child(4)::before { content: "數量"; color: #999; }
-            
-            td:nth-child(6) { 
+            td:nth-child(5) { 
                 order: 4; flex: 100%; text-align: center; background: #fff9f9; 
                 margin-top: 8px; padding: 6px; border-radius: 4px; color: var(--primary-red); font-weight: bold;
             }
@@ -96,13 +91,13 @@
                 <th class="col-unit">組</th>
                 <th class="col-price">單價</th>
                 <th class="col-qty">數量</th>
-                <th class="col-sub v-line text-right">小計</th>
-                <th class="col-note">物資總量推算</th>
+                <th class="col-note">物資總量</th>
+                <th class="col-sub v-line-left text-right">小計金額</th>
             </tr>
         </thead>
         <tbody id="list"></tbody>
     </table>
-    <div style="height: 50px;"></div>
+    <div style="height: 60px;"></div>
 </div>
 
 <script>
@@ -123,19 +118,21 @@
         ["原萃綠茶玉露", 4, 78, 4, "瓶"]
     ];
 
+    // 強制補足 5 個空白列
+    for (let i = 0; i < 5; i++) {
+        data.push(["", 0, 0, 0, "個"]);
+    }
+
     function render() {
         let totalAll = 0;
         const tbody = document.getElementById('list');
         tbody.innerHTML = '';
         
         data.forEach((item, i) => {
-            let sub = item[1] * item[2] * item[3]; // 此處邏輯維持: 組 * 單價 * 數量
-            // 若您的單價本來就是「一箱(組)」的價格，請改為下行:
-            sub = item[2] * item[3]; 
-
+            let sub = item[2] * item[3]; 
             totalAll += sub;
             let totalUnits = item[1] * item[3];
-            let note = item[3] > 0 ? `總數：${totalUnits} ${item[4]}` : "-";
+            let note = (item[0] && item[3] > 0) ? `共計 ${totalUnits} ${item[4]}` : "-";
             
             tbody.innerHTML += `
                 <tr>
@@ -143,8 +140,8 @@
                     <td><input type="number" value="${item[1]}" oninput="updateVal(${i}, 1, this.value)"></td>
                     <td><input type="number" value="${item[2]}" oninput="updateVal(${i}, 2, this.value)"></td>
                     <td><input type="number" value="${item[3]}" oninput="updateVal(${i}, 3, this.value)"></td>
-                    <td class="text-right v-line"><span class="subtotal">${sub.toLocaleString()}</span></td>
                     <td><span style="font-size:13px">${note}</span></td>
+                    <td class="text-right v-line-left"><span class="subtotal">${sub.toLocaleString()}</span></td>
                 </tr>`;
         });
 
