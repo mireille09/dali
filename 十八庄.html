@@ -5,9 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>實毅營造-行腳管理</title>
     <style>
-        :root { --primary-red: #d32f2f; }
+        :root { --primary-red: #d32f2f; --line-black: #000000; }
         body { font-family: "Microsoft JhengHei", sans-serif; background: #fffcf5; margin: 0; padding: 0; color: #333; }
         
+        /* 頁首 */
         .sticky-header {
             position: sticky; top: 0; z-index: 1000;
             background: var(--primary-red); color: white;
@@ -17,61 +18,69 @@
         .sum-val { font-size: 15px; font-weight: bold; }
 
         .content { max-width: 1000px; margin: 10px auto; padding: 0 5px; }
-        table { width: 100%; border-collapse: collapse; background: white; table-layout: fixed; }
-        th { background: #f8f8f8; color: #666; padding: 10px 2px; font-size: 13px; border-bottom: 2px solid #eee; }
-        td { padding: 8px 2px; border-bottom: 1px solid #f1f1f1; text-align: center; }
         
-        input { width: 90%; padding: 5px 2px; border: 1px solid #ddd; border-radius: 4px; text-align: center; }
+        /* --- PC 版黑線表格 --- */
+        table { width: 100%; border-collapse: collapse; background: white; table-layout: fixed; border: 1.5px solid var(--line-black); }
+        th { background: #f2f2f2; color: #000; padding: 10px 2px; font-size: 13px; border: 1px solid var(--line-black); }
+        td { padding: 8px 2px; border: 1px solid var(--line-black); text-align: center; }
+        
+        input { width: 90%; padding: 5px 2px; border: none; text-align: center; background: transparent; }
+        .subtotal { font-weight: bold; color: var(--primary-red); font-family: Consolas, monospace; }
 
-        /* PC 欄位定義 */
-        .col-idx { width: 35px; } .col-name { width: 30%; } .col-unit { width: 45px; } 
-        .col-price { width: 75px; } .col-qty { width: 50px; } .col-note { width: 20%; } .col-sub { width: 90px; }
-
+        /* --- 手機版黑線佈局 --- */
         @media screen and (max-width: 600px) {
             thead { display: none; }
             table, tbody, tr, td { display: block; width: 100%; box-sizing: border-box; }
-            tr { padding: 8px 10px; border-bottom: 2px solid #eee; background: white; margin-bottom: 4px; }
+            tr { padding: 8px 10px; border: 1.5px solid var(--line-black); background: white; margin-bottom: 8px; border-radius: 4px; }
             td { border: none !important; padding: 2px 0 !important; }
             
-            /* 第一行佈局 */
-            .row-top { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+            .row-top { display: flex; justify-content: space-between; align-items: center; width: 100%; border-bottom: 1px solid var(--line-black); padding-bottom: 5px !important; margin-bottom: 5px; }
             .item-name-cell { flex: 1; display: flex; align-items: center; min-width: 0; }
-            .idx-num { color: #bbb; font-size: 11px; margin-right: 4px; flex-shrink: 0; }
-            .item-name-cell input { text-align: left; border: none; font-weight: bold; font-size: 15px; width: 100%; padding: 0; background: transparent; }
-            .item-sub-cell { margin-left: 8px; flex-shrink: 0; color: var(--primary-red); font-weight: bold; font-size: 16px; }
+            .idx-num { color: #000; font-weight: bold; font-size: 12px; margin-right: 5px; }
+            .item-name-cell input { text-align: left; font-weight: bold; font-size: 15px; width: 100%; }
+            .item-sub-cell { margin-left: 8px; color: #000; font-weight: bold; font-size: 16px; }
 
-            /* 第二行佈局 */
-            .row-bottom { display: flex; align-items: center; gap: 4px; width: 100%; margin-top: 5px; }
-            .param-group { display: flex; align-items: center; color: #777; font-size: 11px; white-space: nowrap; }
-            /* 讓輸入框更緊湊，留空間給總量 */
-            .param-group input { 
-                width: 28px; height: 18px; margin: 0 1px; font-size: 12px; 
-                padding: 0; border: none; border-bottom: 1px solid #ccc; border-radius: 0; background: transparent;
-            }
-            .money-symbol { color: #d32f2f; font-weight: bold; margin-right: 1px; }
+            .row-bottom { display: flex; align-items: center; gap: 4px; width: 100%; }
+            .param-group { display: flex; align-items: center; color: #000; font-size: 11px; }
+            .param-group input { width: 30px; border-bottom: 1px solid var(--line-black); border-radius: 0; }
             
-            .mobile-note { 
-                margin-left: auto; color: #27ae60; font-weight: bold; font-size: 11px; 
-                white-space: nowrap; flex-shrink: 0; padding-left: 5px;
-            }
+            .mobile-note { margin-left: auto; color: #000; font-weight: bold; font-size: 11px; border: 1px solid #000; padding: 1px 4px; }
             .pc-only { display: none !important; }
+        }
+
+        /* --- 列印專用設定 --- */
+        @media print {
+            .sticky-header { background: white !important; color: black !important; position: static; box-shadow: none; border-bottom: 2px solid black; }
+            .summary-bar { background: none !important; color: black !important; }
+            body { background: white !important; }
+            input { border: none !important; }
+            .subtotal, .item-sub-cell { color: black !important; }
+            .mobile-note { color: black !important; }
         }
     </style>
 </head>
 <body>
 
 <div class="sticky-header">
-    <div style="text-align:center; font-size: 16px; margin-bottom: 5px; font-weight: bold;">🏮 十八庄行腳物資管理</div>
+    <div style="text-align:center; font-size: 18px; margin-bottom: 5px; font-weight: bold;">🏮 十八庄行腳物資管理清單</div>
     <div class="summary-bar">
-        <div style="text-align:center;"><small style="font-size:10px; opacity:0.8;">支出</small><div id="total" class="sum-val">0</div></div>
-        <div style="text-align:center;"><small style="font-size:10px; opacity:0.8;">剩餘</small><div id="rem" class="sum-val">14,000</div></div>
+        <div style="text-align:center;"><small>支出：</small><span id="total" class="sum-val">0</span></div>
+        <div style="text-align:center;"><small>剩餘：</small><span id="rem" class="sum-val">14,000</span></div>
     </div>
 </div>
 
 <div class="content">
     <table>
         <thead>
-            <tr><th class="col-idx">#</th><th class="col-name">項目</th><th class="col-unit">組</th><th class="col-price">單價</th><th class="col-qty">數量</th><th class="col-note">總量</th><th class="col-sub">小計</th></tr>
+            <tr>
+                <th style="width:35px">#</th>
+                <th style="width:30%">項目名稱</th>
+                <th style="width:45px">組</th>
+                <th style="width:75px">單價</th>
+                <th style="width:50px">數量</th>
+                <th style="width:20%">總量</th>
+                <th style="width:90px">小計</th>
+            </tr>
         </thead>
         <tbody id="list"></tbody>
     </table>
@@ -107,7 +116,7 @@
             let note = (item[0] && item[3] > 0) ? `${totalUnits}${item[4]}` : "";
             tbody.innerHTML += `
                 <tr>
-                    <td class="col-idx pc-only">${i + 1}</td>
+                    <td class="pc-only">${i + 1}</td>
                     <td class="row-top">
                         <div class="item-name-cell">
                             <span class="idx-num pc-only-hide" style="display:none">${i + 1}.</span>
@@ -115,27 +124,24 @@
                         </div>
                         <div class="item-sub-cell pc-only-hide" style="display:none">$${sub.toLocaleString()}</div>
                     </td>
-                    <td class="pc-only col-unit"><input type="number" value="${item[1]}" oninput="updateVal(${i}, 1, this.value)"></td>
-                    <td class="pc-only col-price"><input type="number" value="${item[2]}" oninput="updateVal(${i}, 2, this.value)"></td>
-                    <td class="pc-only col-qty"><input type="number" value="${item[3]}" oninput="updateVal(${i}, 3, this.value)"></td>
+                    <td class="pc-only"><input type="number" value="${item[1]}" oninput="updateVal(${i}, 1, this.value)"></td>
+                    <td class="pc-only"><input type="number" value="${item[2]}" oninput="updateVal(${i}, 2, this.value)"></td>
+                    <td class="pc-only"><input type="number" value="${item[3]}" oninput="updateVal(${i}, 3, this.value)"></td>
                     <td class="row-bottom pc-only-hide" style="display:none">
                         <div class="param-group">組<input type="number" value="${item[1]}" oninput="updateVal(${i}, 1, this.value)"></div>
-                        <div class="param-group"><span class="money-symbol">$</span><input type="number" value="${item[2]}" oninput="updateVal(${i}, 2, this.value)"></div>
+                        <div class="param-group">$<input type="number" value="${item[2]}" oninput="updateVal(${i}, 2, this.value)"></div>
                         <div class="param-group">x<input type="number" value="${item[3]}" oninput="updateVal(${i}, 3, this.value)"></div>
                         <div class="mobile-note">${note ? '共'+note : ''}</div>
                     </td>
-                    <td class="pc-only col-note" style="font-size:12px">${note ? '共'+note : "-"}</td>
-                    <td class="pc-only col-sub text-right" style="font-weight:bold; color:red; padding-right:10px;">${sub.toLocaleString()}</td>
+                    <td class="pc-only" style="font-size:12px">${note ? '共'+note : "-"}</td>
+                    <td class="pc-only text-right" style="font-weight:bold; padding-right:5px;">${sub.toLocaleString()}</td>
                 </tr>`;
         });
         const isMobile = window.innerWidth <= 600;
         document.querySelectorAll(isMobile ? '.pc-only' : '.pc-only-hide').forEach(el => el.style.setProperty('display', 'none', 'important'));
         document.querySelectorAll(isMobile ? '.pc-only-hide' : '.pc-only').forEach(el => el.style.setProperty('display', isMobile ? 'flex' : 'table-cell', 'important'));
         document.getElementById('total').innerText = totalAll.toLocaleString();
-        let remain = 14000 - totalAll;
-        let remDisplay = document.getElementById('rem');
-        remDisplay.innerText = remain.toLocaleString();
-        remDisplay.style.color = remain < 0 ? "#ffeb3b" : "#fff";
+        document.getElementById('rem').innerText = (14000 - totalAll).toLocaleString();
     }
     function updateVal(index, field, val) { data[index][field] = parseFloat(val) || 0; render(); }
     window.onresize = render;
