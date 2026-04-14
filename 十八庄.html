@@ -18,21 +18,28 @@
 
         .content { max-width: 1000px; margin: 10px auto; padding: 0 5px; }
         
-        /* --- PC 版黑線表格 --- */
+        /* 表格樣式 */
         table { width: 100%; border-collapse: collapse; background: white; table-layout: fixed; border: 1.5px solid var(--black); }
         th { background: #f2f2f2; color: #000; padding: 10px 2px; font-size: 13px; border: 1px solid var(--black); }
         td { padding: 8px 2px; border: 1px solid var(--black); text-align: center; }
         
+        /* 分隔線樣式 */
+        .divider-row { background: #f9f9f9; height: 8px; }
+        .divider-row td { border-left: 1px solid var(--black); border-right: 1px solid var(--black); border-bottom: 1px solid var(--black); }
+
         input { width: 95%; padding: 5px 2px; border: none; text-align: center; background: transparent; font-family: inherit; font-size: inherit; }
         .subtotal { font-weight: bold; color: var(--primary-red); font-family: Consolas, monospace; }
 
-        /* --- 手機版黑線佈局 --- */
         @media screen and (max-width: 600px) {
             thead { display: none; }
             table, tbody, tr, td { display: block; width: 100%; box-sizing: border-box; }
             tr { padding: 8px 10px; border: 1.5px solid var(--black); background: white; margin-bottom: 6px; }
             td { border: none !important; padding: 2px 0 !important; }
             
+            /* 手機版分隔線隱藏背景，改用間距 */
+            .divider-row { border: none !important; background: transparent; height: 15px; margin-bottom: 0; }
+            .divider-row td { display: none; }
+
             .row-top { display: flex; justify-content: space-between; align-items: center; width: 100%; border-bottom: 1px solid var(--black); padding-bottom: 4px !important; margin-bottom: 4px; }
             .item-name-cell { flex: 1; display: flex; align-items: center; min-width: 0; }
             .idx-num { color: #000; font-weight: bold; font-size: 12px; margin-right: 5px; }
@@ -41,20 +48,18 @@
 
             .row-bottom { display: flex; align-items: center; gap: 4px; width: 100%; }
             .param-group { display: flex; align-items: center; color: #000; font-size: 11px; }
-            /* 手機輸入框下底線 */
             .param-group input { width: 30px; height: 18px; border-bottom: 1px solid var(--black); border-radius: 0; }
             
             .mobile-note { margin-left: auto; color: #27ae60; font-weight: bold; font-size: 11px; border: 1px solid var(--black); padding: 1px 4px; }
             .pc-only { display: none !important; }
         }
 
-        /* --- 列印專用優化 --- */
         @media print {
             .sticky-header { background: white !important; color: black !important; position: static; box-shadow: none; border-bottom: 3px solid black; }
             .summary-bar { background: none !important; color: black !important; }
             body { background: white !important; }
-            tr { page-break-inside: avoid; } /* 避免列印時項目被截斷到下一頁 */
-            .subtotal, .item-sub-cell { color: black !important; } /* 黑白列印自動轉黑 */
+            tr { page-break-inside: avoid; }
+            .subtotal, .item-sub-cell { color: black !important; }
         }
     </style>
 </head>
@@ -86,39 +91,51 @@
 </div>
 
 <script>
+    // 使用 null 代表分隔線
     const data = [
         ["寶礦利 580ml", 24, 462, 2, "瓶"],
         ["寶礦利(低卡) 580ml", 24, 462, 1, "瓶"],
         ["悅氏礦泉水 600ml", 24, 168, 2, "瓶"],
         ["Simple 純水 280ml", 24, 144, 2, "瓶"],
-        ["綜合堅果隨手包", 1, 30, 120, "包"],
-        ["名糖檸檬鹽糖", 1, 89, 3, "袋"],
-        ["BF薄荷岩鹽檸檬糖", 1, 62, 3, "袋"],
+        ["原萃綠茶玉露(4入)", 4, 78, 4, "瓶"],
+        null,
+        ["義美無加糖元氣豆奶", 24, 284, 1, "瓶"],
         ["貝納頌經典拿鐵(3入)", 3, 75, 8, "瓶"],
         ["貝納頌榛果拿鐵(3入)", 3, 66, 4, "瓶"],
-        ["家樂福環保袋-大", 1, 42, 2, "卷"],
+        null,
+        ["名糖檸檬鹽糖", 1, 89, 3, "袋"],
+        ["BF薄荷岩鹽檸檬糖", 1, 62, 3, "袋"],
+        ["綜合堅果隨手包", 1, 30, 120, "包"],
+        null,
         ["聯翔鳳梨酥", 1, 30, 80, "個"],
         ["聯翔杏仁瓦片(12入)", 12, 336, 5, "包"],
-        ["義美無加糖元氣豆奶", 24, 284, 1, "瓶"],
-        ["原萃綠茶玉露(4入)", 4, 78, 4, "瓶"]
+        null,
+        ["家樂福環保袋-大", 1, 42, 2, "卷"]
     ];
-    for (let i = 0; i < 5; i++) { data.push(["", 0, 0, 0, ""]); }
 
     function render() {
         let totalAll = 0;
+        let displayIdx = 1;
         const tbody = document.getElementById('list');
         tbody.innerHTML = '';
+
         data.forEach((item, i) => {
+            if (item === null) {
+                tbody.innerHTML += `<tr class="divider-row"><td colspan="7"></td></tr>`;
+                return;
+            }
+
             let sub = item[2] * item[3]; 
             totalAll += sub;
             let totalUnits = item[1] * item[3];
             let note = (item[0] && item[3] > 0) ? `${totalUnits}${item[4]}` : "";
+            
             tbody.innerHTML += `
                 <tr>
-                    <td class="pc-only">${i + 1}</td>
+                    <td class="pc-only">${displayIdx}</td>
                     <td class="row-top">
                         <div class="item-name-cell">
-                            <span class="idx-num pc-only-hide" style="display:none">${i + 1}.</span>
+                            <span class="idx-num pc-only-hide" style="display:none">${displayIdx}.</span>
                             <input type="text" value="${item[0]}" onchange="data[${i}][0]=this.value;render()">
                         </div>
                         <div class="item-sub-cell pc-only-hide subtotal" style="display:none">$${sub.toLocaleString()}</div>
@@ -135,14 +152,21 @@
                     <td class="pc-only" style="font-size:12px">${note ? '共'+note : "-"}</td>
                     <td class="pc-only text-right subtotal" style="padding-right:8px;">${sub.toLocaleString()}</td>
                 </tr>`;
+            displayIdx++;
         });
+
         const isMobile = window.innerWidth <= 600;
         document.querySelectorAll(isMobile ? '.pc-only' : '.pc-only-hide').forEach(el => el.style.setProperty('display', 'none', 'important'));
         document.querySelectorAll(isMobile ? '.pc-only-hide' : '.pc-only').forEach(el => el.style.setProperty('display', isMobile ? 'flex' : 'table-cell', 'important'));
+        
         document.getElementById('total').innerText = totalAll.toLocaleString();
         document.getElementById('rem').innerText = (14000 - totalAll).toLocaleString();
     }
-    function updateVal(index, field, val) { data[index][field] = parseFloat(val) || 0; render(); }
+
+    function updateVal(index, field, val) { 
+        data[index][field] = parseFloat(val) || 0; 
+        render(); 
+    }
     window.onresize = render;
     render();
 </script>
