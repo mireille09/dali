@@ -2,107 +2,57 @@
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
-    <title>行腳物資採購清單-完整版</title>
+    <title>實毅營造-行腳物資管理</title>
     <style>
-        body { font-family: "Microsoft JhengHei", sans-serif; background: #fffcf5; padding: 40px; }
-        .container { max-width: 800px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-top: 8px solid #d32f2f; }
-        h2 { text-align: center; color: #d32f2f; margin-bottom: 20px; }
-        .stat-bar { display: flex; justify-content: space-around; background: #fdf2f2; padding: 15px; border-radius: 8px; margin-bottom: 25px; border: 1px solid #f9dcdc; position: sticky; top: 0; z-index: 10; }
-        .stat-box { text-align: center; }
-        .stat-label { font-size: 14px; color: #666; }
-        .stat-val { display: block; font-size: 22px; font-weight: bold; color: #333; }
+        body { font-family: sans-serif; background: #fffcf5; padding: 20px; }
+        .box { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); border-top: 5px solid #d32f2f; }
+        h2 { text-align: center; color: #d32f2f; }
+        .summary { display: flex; justify-content: space-around; background: #fdf2f2; padding: 10px; margin-bottom: 20px; font-weight: bold; }
         table { width: 100%; border-collapse: collapse; }
-        th { border-bottom: 2px solid #eee; padding: 10px; color: #888; font-size: 14px; background: #fafafa; }
-        td { padding: 8px 5px; border-bottom: 1px solid #f1f1f1; text-align: center; }
-        input { width: 90%; padding: 8px; border: 1px solid #ddd; border-radius: 5px; text-align: center; font-size: 16px; }
-        input:focus { border-color: #d32f2f; outline: none; background: #fffafa; }
-        .item-name { text-align: left !important; }
-        .item-name input { text-align: left; border: 1px transparent solid; background: transparent; }
-        .item-name input:hover { border: 1px #eee solid; background: #fff; }
+        th { border-bottom: 2px solid #eee; padding: 10px; font-size: 14px; background: #fafafa; }
+        td { padding: 10px; border-bottom: 1px solid #f1f1f1; text-align: center; }
+        input { width: 85%; padding: 5px; border: 1px solid #ddd; text-align: center; }
         .subtotal { font-weight: bold; color: #d32f2f; }
-        .highlight { color: #d32f2f !important; }
-        .footer-hint { text-align: center; color: #999; font-size: 12px; margin-top: 20px; }
     </style>
 </head>
 <body>
-
-<div class="container">
-    <h2>🏮 十八庄媽祖行腳物資管理 (預算 14k)</h2>
-    
-    <div class="stat-bar">
-        <div class="stat-box"><span class="stat-label">預算總額</span><span class="stat-val">14,000</span></div>
-        <div class="stat-box"><span class="stat-label">目前總支出</span><span id="totalCost" class="stat-val">0</span></div>
-        <div class="stat-box"><span class="stat-label">剩餘餘額</span><span id="remain" class="stat-val highlight">14,000</span></div>
+<div class="box">
+    <h2>🏮 行腳物資採購統計</h2>
+    <div class="summary">
+        <div>總支出：<span id="total">0</span></div>
+        <div>預算剩餘：<span id="rem">14000</span></div>
     </div>
-
     <table>
-        <thead>
-            <tr>
-                <th width="35%" class="item-name">物資項目</th>
-                <th width="18%">單價</th>
-                <th width="18%">數量</th>
-                <th width="24%">金額小計</th>
-            </tr>
-        </thead>
-        <tbody id="inventoryBody">
-            <tr class="item-row">
-                <td class="item-name"><input type="text" value="寶礦利 (580ml)"></td>
-                <td><input type="number" class="price" value="22" oninput="run()"></td>
-                <td><input type="number" class="qty" value="144" oninput="run()"></td>
-                <td><span class="subtotal">0</span></td>
-            </tr>
-            <tr class="item-row">
-                <td class="item-name"><input type="text" value="純水 (600ml)"></td>
-                <td><input type="number" class="price" value="10" oninput="run()"></td>
-                <td><input type="number" class="qty" value="144" oninput="run()"></td>
-                <td><span class="subtotal">0</span></td>
-            </tr>
-            <tr class="item-row">
-                <td class="item-name"><input type="text" value="鳳梨酥"></td>
-                <td><input type="number" class="price" value="45" oninput="run()"></td>
-                <td><input type="number" class="qty" value="200" oninput="run()"></td>
-                <td><span class="subtotal">0</span></td>
-            </tr>
-            <tr class="item-row"><td class="item-name"><input type="text" placeholder="輸入項目名稱..."></td><td><input type="number" class="price" value="0" oninput="run()"></td><td><input type="number" class="qty" value="0" oninput="run()"></td><td><span class="subtotal">0</span></td></tr>
-            <tr class="item-row"><td class="item-name"><input type="text" placeholder="輸入項目名稱..."></td><td><input type="number" class="price" value="0" oninput="run()"></td><td><input type="number" class="qty" value="0" oninput="run()"></td><td><span class="subtotal">0</span></td></tr>
-            <tr class="item-row"><td class="item-name"><input type="text" placeholder="輸入項目名稱..."></td><td><input type="number" class="price" value="0" oninput="run()"></td><td><input type="number" class="qty" value="0" oninput="run()"></td><td><span class="subtotal">0</span></td></tr>
-            <tr class="item-row"><td class="item-name"><input type="text" placeholder="輸入項目名稱..."></td><td><input type="number" class="price" value="0" oninput="run()"></td><td><input type="number" class="qty" value="0" oninput="run()"></td><td><span class="subtotal">0</span></td></tr>
-            <tr class="item-row"><td class="item-name"><input type="text" placeholder="輸入項目名稱..."></td><td><input type="number" class="price" value="0" oninput="run()"></td><td><input type="number" class="qty" value="0" oninput="run()"></td><td><span class="subtotal">0</span></td></tr>
-            <tr class="item-row"><td class="item-name"><input type="text" placeholder="輸入項目名稱..."></td><td><input type="number" class="price" value="0" oninput="run()"></td><td><input type="number" class="qty" value="0" oninput="run()"></td><td><span class="subtotal">0</span></td></tr>
-            <tr class="item-row"><td class="item-name"><input type="text" placeholder="輸入項目名稱..."></td><td><input type="number" class="price" value="0" oninput="run()"></td><td><input type="number" class="qty" value="0" oninput="run()"></td><td><span class="subtotal">0</span></td></tr>
-            <tr class="item-row"><td class="item-name"><input type="text" placeholder="輸入項目名稱..."></td><td><input type="number" class="price" value="0" oninput="run()"></td><td><input type="number" class="qty" value="0" oninput="run()"></td><td><span class="subtotal">0</span></td></tr>
-        </tbody>
+        <thead><tr><th>項目</th><th>單價</th><th>數量</th><th>金額</th></tr></thead>
+        <tbody id="list"></tbody>
     </table>
-    <div class="footer-hint">PC 提示：使用 Tab 鍵可快速切換欄位進行填寫</div>
 </div>
-
 <script>
+    const data = [
+        ["寶礦利 580ml (箱)", 462, 2], ["寶礦利(低卡) (箱)", 462, 1],
+        ["悅氏礦泉水 600ml (箱)", 168, 2], ["Simple 純水 280ml (箱)", 144, 2],
+        ["綜合堅果隨手包", 30, 120], ["名糖檸檬鹽糖", 89, 3],
+        ["BF薄荷岩鹽檸檬糖", 62, 3], ["貝納頌經典拿鐵(3入)", 75, 8],
+        ["貝納頌榛果拿鐵(3入)", 66, 4], ["家樂福垃圾袋", 42, 2],
+        ["聯翔鳳梨酥", 30, 80], ["聯翔杏仁瓦片", 336, 5],
+        ["義美無糖豆奶(箱)", 284, 1], ["原萃綠茶(4入)", 78, 4]
+    ];
+    const tbody = document.getElementById('list');
     function run() {
         let total = 0;
-        const rows = document.querySelectorAll('.item-row');
-        const budget = 14000;
-
-        rows.forEach(row => {
-            const p = parseFloat(row.querySelector('.price').value) || 0;
-            const q = parseFloat(row.querySelector('.qty').value) || 0;
-            const sub = p * q;
-            row.querySelector('.subtotal').innerText = sub.toLocaleString();
+        tbody.innerHTML = '';
+        data.forEach((item, i) => {
+            let sub = item[1] * item[2];
             total += sub;
+            tbody.innerHTML += `<tr><td style="text-align:left">${item[0]}</td>
+                <td><input type="number" value="${item[1]}" onchange="data[${i}][1]=this.value;run()"></td>
+                <td><input type="number" value="${item[2]}" onchange="data[${i}][2]=this.value;run()"></td>
+                <td class="subtotal">${sub.toLocaleString()}</td></tr>`;
         });
-
-        const rem = budget - total;
-        document.getElementById('totalCost').innerText = total.toLocaleString();
-        document.getElementById('remain').innerText = rem.toLocaleString();
-        
-        if (rem < 0) {
-            document.getElementById('remain').style.color = '#d32f2f';
-            document.getElementById('remain').innerText = "超支 " + Math.abs(rem).toLocaleString();
-        } else {
-            document.getElementById('remain').style.color = '#333';
-        }
+        document.getElementById('total').innerText = total.toLocaleString();
+        document.getElementById('rem').innerText = (14000 - total).toLocaleString();
     }
     run();
 </script>
-
 </body>
 </html>
