@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>媽祖行腳物資管理</title>
+    <style>
+        body { font-family: "Microsoft JhengHei", sans-serif; background: #fff5f5; padding: 30px; }
+        .container { max-width: 600px; margin: auto; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); border: 2px solid #e74c3c; }
+        h2 { color: #e74c3c; text-align: center; border-bottom: 2px solid #f9ebea; padding-bottom: 10px; }
+        .budget-card { background: #e74c3c; color: white; padding: 15px; border-radius: 8px; text-align: center; margin-bottom: 20px; }
+        .budget-val { font-size: 24px; font-weight: bold; }
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; color: #666; font-size: 14px; }
+        td { padding: 10px 0; border-bottom: 1px solid #eee; }
+        input { width: 80%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+        .result { margin-top: 20px; font-weight: bold; text-align: right; color: #333; }
+        .over { color: #e74c3c; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🙏 十八庄媽祖行腳物資統計</h2>
+    <div class="budget-card">
+        總預算：NT$ 14,000<br>
+        剩餘餘額：<span id="remaining" class="budget-val">14000</span>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th width="40%">品項</th>
+                <th width="30%">數量</th>
+                <th width="30%">單價</th>
+            </tr>
+        </thead>
+        <tbody id="itemList">
+            <tr>
+                <td>寶礦利 (580ml)</td>
+                <td><input type="number" class="qty" value="120" oninput="calc()"></td>
+                <td><input type="number" class="pri" value="22" oninput="calc()"></td>
+            </tr>
+            <tr>
+                <td>純水 (600ml)</td>
+                <td><input type="number" class="qty" value="120" oninput="calc()"></td>
+                <td><input type="number" class="pri" value="10" oninput="calc()"></td>
+            </tr>
+            <tr>
+                <td>鳳梨酥</td>
+                <td><input type="number" class="qty" value="150" oninput="calc()"></td>
+                <td><input type="number" class="pri" value="45" oninput="calc()"></td>
+            </tr>
+            <tr>
+                <td>能量果凍</td>
+                <td><input type="number" class="qty" value="60" oninput="calc()"></td>
+                <td><input type="number" class="pri" value="35" oninput="calc()"></td>
+            </tr>
+            <tr>
+                <td>其他(冰塊/糖果)</td>
+                <td><input type="number" class="qty" value="1" oninput="calc()"></td>
+                <td><input type="number" class="pri" value="810" oninput="calc()"></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="result">
+        目前總計花費：NT$ <span id="totalCost">0</span>
+    </div>
+</div>
+
+<script>
+    function calc() {
+        let total = 0;
+        const qtys = document.getElementsByClassName('qty');
+        const pris = document.getElementsByClassName('pri');
+        const budget = 14000;
+
+        for (let i = 0; i < qtys.length; i++) {
+            total += (parseInt(qtys[i].value) || 0) * (parseInt(pris[i].value) || 0);
+        }
+
+        const remain = budget - total;
+        document.getElementById('totalCost').innerText = total.toLocaleString();
+        document.getElementById('remaining').innerText = remain.toLocaleString();
+        
+        if (remain < 0) {
+            document.getElementById('remaining').classList.add('over');
+        } else {
+            document.getElementById('remaining').classList.remove('over');
+        }
+    }
+    calc();
+</script>
+
+</body>
+</html>
