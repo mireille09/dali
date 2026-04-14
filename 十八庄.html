@@ -2,15 +2,15 @@
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>實毅營造-行腳物資管理</title>
     <style>
-        :root { --primary-red: #d32f2f; --bg-white: #ffffff; }
+        :root { --primary-red: #d32f2f; }
         body { font-family: "Microsoft JhengHei", sans-serif; background: #fffcf5; margin: 0; padding: 0; color: #333; }
         
         /* 置頂區域 */
         .sticky-header {
-            position: sticky; top: 0; z-index: 1000;
+            position: -webkit-sticky; position: sticky; top: 0; z-index: 1000;
             background: var(--primary-red); color: white;
             padding: 10px 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.2);
         }
@@ -33,49 +33,49 @@
         input { width: 90%; padding: 6px 2px; border: 1px solid #ddd; border-radius: 4px; text-align: center; font-size: 14px; }
         input:focus { border-color: var(--primary-red); outline: none; background: #fffafa; }
 
-        /* 調整特定欄位寬度 */
+        /* 欄位寬度 */
         .col-name { width: 28%; }
-        .col-unit { width: 45px; } 
-        .col-price { width: 70px; }
-        .col-qty { width: 50px; }  
-        .col-note { width: 20%; }
-        .col-sub { width: 95px; }
+        .col-unit { width: 40px; } 
+        .col-price { width: 65px; }
+        .col-qty { width: 45px; }  
+        .col-note { width: 22%; }
+        .col-sub { width: 90px; }
 
         .text-left { text-align: left; padding-left: 8px; }
         .text-right { text-align: right; padding-right: 12px; }
         .v-line-left { border-left: 1px solid #eee; }
-        
         .subtotal { font-weight: bold; color: var(--primary-red); font-family: Consolas, monospace; }
 
+        /* 強制手機版樣式更新 */
         @media screen and (max-width: 600px) {
-            thead { display: none; }
-            table { table-layout: auto; }
+            thead { display: none !important; }
+            table, tbody, tr, td { display: block !important; width: 100% !important; box-sizing: border-box; }
             tr { 
-                display: flex; flex-wrap: wrap; padding: 12px 8px; 
-                border-bottom: 2px solid #f0f0f0; background: white; margin-bottom: 5px;
+                padding: 12px 10px; border-bottom: 4px solid #eee !important; 
+                background: white; margin-bottom: 10px; border-radius: 8px;
             }
-            td { border: none; padding: 4px; flex: none; }
-            td:nth-child(1) { order: 1; flex: 2; text-align: left; }
-            td:nth-child(6) { order: 2; flex: 1; text-align: right; font-size: 16px; }
-            td:nth-child(2), td:nth-child(3), td:nth-child(4) { 
-                order: 3; flex: 1; font-size: 12px; display: flex; flex-direction: column; align-items: center;
-            }
-            td:nth-child(2)::before { content: "組"; color: #999; }
-            td:nth-child(3)::before { content: "單價"; color: #999; }
-            td:nth-child(4)::before { content: "數量"; color: #999; }
-            td:nth-child(5) { 
-                order: 4; flex: 100%; text-align: center; background: #fff9f9; 
-                margin-top: 8px; padding: 6px; border-radius: 4px; color: var(--primary-red); font-weight: bold;
-            }
-            input { width: 95%; border: none; background: #f9f9f9; }
-            input[type="number"] { background: white; border-bottom: 1px solid #eee; }
+            td { border: none !important; padding: 5px 0 !important; text-align: left !important; display: flex !important; justify-content: space-between; align-items: center; }
+            
+            /* 手機版：項目名稱與金額佔首行 */
+            td:nth-child(1) { font-weight: bold; background: #fff9f9; padding: 8px !important; border-radius: 5px; }
+            td:nth-child(6) { font-size: 18px; color: var(--primary-red); border-top: 1px dashed #eee !important; padding-top: 10px !important; }
+            
+            /* 參數列標籤 */
+            td:nth-child(2)::before { content: "組數："; color: #999; font-weight: normal; }
+            td:nth-child(3)::before { content: "單價："; color: #999; font-weight: normal; }
+            td:nth-child(4)::before { content: "採購數量："; color: #999; font-weight: normal; }
+            td:nth-child(5)::before { content: "總量推算："; color: #999; font-weight: normal; }
+            td:nth-child(6)::before { content: "小計金額："; color: #333; font-size: 14px; }
+            
+            input { width: 50% !important; border: 1px solid #eee !important; text-align: right !important; }
+            td:nth-child(1) input { width: 100% !important; text-align: left !important; background: transparent; border: none !important; font-size: 16px; }
         }
     </style>
 </head>
 <body>
 
 <div class="sticky-header">
-    <h2>🏮 實毅營造 - 十八庄行腳物資管理</h2>
+    <h2>🏮 實毅營造 - 物資管理系統</h2>
     <div class="summary-bar">
         <div class="sum-item"><span class="sum-label">總預算</span><span class="sum-val">14,000</span></div>
         <div class="sum-item"><span class="sum-label">已支出</span><span id="total" class="sum-val">0</span></div>
@@ -97,7 +97,7 @@
         </thead>
         <tbody id="list"></tbody>
     </table>
-    <div style="height: 60px;"></div>
+    <div style="height: 50px;"></div>
 </div>
 
 <script>
@@ -118,10 +118,7 @@
         ["原萃綠茶玉露", 4, 78, 4, "瓶"]
     ];
 
-    // 強制補足 5 個空白列
-    for (let i = 0; i < 5; i++) {
-        data.push(["", 0, 0, 0, "個"]);
-    }
+    for (let i = 0; i < 5; i++) { data.push(["", 0, 0, 0, "個"]); }
 
     function render() {
         let totalAll = 0;
@@ -132,7 +129,7 @@
             let sub = item[2] * item[3]; 
             totalAll += sub;
             let totalUnits = item[1] * item[3];
-            let note = (item[0] && item[3] > 0) ? `共計 ${totalUnits} ${item[4]}` : "-";
+            let note = (item[0] && item[3] > 0) ? `${totalUnits} ${item[4]}` : "-";
             
             tbody.innerHTML += `
                 <tr>
