@@ -8,6 +8,7 @@
         :root { --primary-red: #d32f2f; }
         body { font-family: "Microsoft JhengHei", sans-serif; background: #fffcf5; margin: 0; padding: 0; color: #333; }
         
+        /* 固定頂部 */
         .sticky-header {
             position: sticky; top: 0; z-index: 1000;
             background: var(--primary-red); color: white;
@@ -32,24 +33,37 @@
         .col-qty { width: 50px; }  
         .col-note { width: 20%; }
         .col-sub { width: 95px; }
-        .text-left { text-align: left; padding-left: 10px; }
-        .text-right { text-align: right; padding-right: 15px; }
         .subtotal { font-weight: bold; color: var(--primary-red); font-family: Consolas, monospace; }
 
+        /* --- 手機版優化核心 --- */
         @media screen and (max-width: 600px) {
             thead { display: none; }
             table, tbody, tr, td { display: block; width: 100%; }
             tr { padding: 10px 8px; border-bottom: 1px solid #eee; background: white; margin-bottom: 2px; }
             td { border: none !important; padding: 2px 0 !important; }
+            
             .row-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
-            .item-name-cell { flex: 2; text-align: left !important; display: flex; align-items: center; }
-            .idx-num { color: #ccc; margin-right: 8px; font-size: 12px; min-width: 18px; }
-            .item-name-cell input { text-align: left; border: none; font-weight: bold; font-size: 15px; background: transparent; padding: 0; }
-            .item-sub-cell { flex: 1; text-align: right !important; font-size: 17px; }
-            .row-bottom { display: flex; align-items: center; font-size: 12px; color: #666; gap: 8px; padding-left: 26px; }
-            .param-group { display: flex; align-items: center; }
-            .param-group input { width: 38px; height: 22px; margin: 0 3px; font-size: 12px; }
-            .mobile-note { margin-left: auto; color: #27ae60; font-weight: bold; }
+            .item-name-cell { flex: 1; display: flex; align-items: center; overflow: hidden; }
+            .idx-num { color: #ccc; margin-right: 5px; font-size: 11px; min-width: 15px; }
+            .item-name-cell input { text-align: left; border: none; font-weight: bold; font-size: 15px; background: transparent; padding: 0; width: 100%; overflow: hidden; text-overflow: ellipsis; }
+            .item-sub-cell { margin-left: 10px; font-size: 17px; white-space: nowrap; }
+
+            /* 參數列：縮窄輸入框寬度，讓總量有空間 */
+            .row-bottom { display: flex; align-items: center; font-size: 11px; color: #777; gap: 4px; }
+            .param-group { display: flex; align-items: center; white-space: nowrap; }
+            .param-group input { width: 32px; height: 20px; margin: 0 2px; font-size: 12px; padding: 1px; border: 1px solid #eee; background: #fff; }
+            .param-label { color: #aaa; font-size: 10px; }
+            
+            .mobile-note { 
+                margin-left: auto; 
+                color: #27ae60; 
+                font-weight: bold; 
+                font-size: 11px; 
+                white-space: nowrap;
+                background: #f0fff4;
+                padding: 2px 5px;
+                border-radius: 3px;
+            }
             .pc-only { display: none !important; }
         }
     </style>
@@ -112,12 +126,12 @@
             let sub = item[2] * item[3]; 
             totalAll += sub;
             let totalUnits = item[1] * item[3];
-            let note = (item[0] && item[3] > 0) ? `共${totalUnits}${item[4]}` : "";
+            let note = (item[0] && item[3] > 0) ? `${totalUnits}${item[4]}` : "";
             
             tbody.innerHTML += `
                 <tr>
                     <td class="col-idx pc-only">${i + 1}</td>
-                    <td class="item-name-cell text-left row-top">
+                    <td class="item-name-cell row-top">
                         <div class="item-name-cell">
                             <span class="idx-num pc-only-hide" style="display:none">${i + 1}.</span>
                             <input type="text" value="${item[0]}" onchange="data[${i}][0]=this.value;render()">
@@ -128,12 +142,12 @@
                     <td class="pc-only col-price"><input type="number" value="${item[2]}" oninput="updateVal(${i}, 2, this.value)"></td>
                     <td class="pc-only col-qty"><input type="number" value="${item[3]}" oninput="updateVal(${i}, 3, this.value)"></td>
                     <td class="row-bottom pc-only-hide" style="display:none">
-                        <div class="param-group">組<input type="number" value="${item[1]}" oninput="updateVal(${i}, 1, this.value)"></div>
-                        <div class="param-group">$<input type="number" value="${item[2]}" oninput="updateVal(${i}, 2, this.value)"></div>
-                        <div class="param-group">x<input type="number" value="${item[3]}" oninput="updateVal(${i}, 3, this.value)"></div>
-                        <div class="mobile-note">${note}</div>
+                        <div class="param-group"><span class="param-label">組</span><input type="number" value="${item[1]}" oninput="updateVal(${i}, 1, this.value)"></div>
+                        <div class="param-group"><span class="param-label">$</span><input type="number" value="${item[2]}" oninput="updateVal(${i}, 2, this.value)"></div>
+                        <div class="param-group"><span class="param-label">x</span><input type="number" value="${item[3]}" oninput="updateVal(${i}, 3, this.value)"></div>
+                        <div class="mobile-note">${note ? '共'+note : ''}</div>
                     </td>
-                    <td class="pc-only col-note" style="font-size:13px">${note || "-"}</td>
+                    <td class="pc-only col-note" style="font-size:13px">${note ? '共'+note : "-"}</td>
                     <td class="pc-only col-sub text-right"><span class="subtotal">${sub.toLocaleString()}</span></td>
                 </tr>`;
         });
