@@ -5,10 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>實毅營造-行腳管理</title>
     <style>
-        :root { --primary-red: #d32f2f; --line-black: #000000; }
+        :root { --primary-red: #d32f2f; --black: #000000; }
         body { font-family: "Microsoft JhengHei", sans-serif; background: #fffcf5; margin: 0; padding: 0; color: #333; }
         
-        /* 頁首 */
         .sticky-header {
             position: sticky; top: 0; z-index: 1000;
             background: var(--primary-red); color: white;
@@ -20,42 +19,42 @@
         .content { max-width: 1000px; margin: 10px auto; padding: 0 5px; }
         
         /* --- PC 版黑線表格 --- */
-        table { width: 100%; border-collapse: collapse; background: white; table-layout: fixed; border: 1.5px solid var(--line-black); }
-        th { background: #f2f2f2; color: #000; padding: 10px 2px; font-size: 13px; border: 1px solid var(--line-black); }
-        td { padding: 8px 2px; border: 1px solid var(--line-black); text-align: center; }
+        table { width: 100%; border-collapse: collapse; background: white; table-layout: fixed; border: 1.5px solid var(--black); }
+        th { background: #f2f2f2; color: #000; padding: 10px 2px; font-size: 13px; border: 1px solid var(--black); }
+        td { padding: 8px 2px; border: 1px solid var(--black); text-align: center; }
         
-        input { width: 90%; padding: 5px 2px; border: none; text-align: center; background: transparent; }
+        input { width: 95%; padding: 5px 2px; border: none; text-align: center; background: transparent; font-family: inherit; font-size: inherit; }
         .subtotal { font-weight: bold; color: var(--primary-red); font-family: Consolas, monospace; }
 
         /* --- 手機版黑線佈局 --- */
         @media screen and (max-width: 600px) {
             thead { display: none; }
             table, tbody, tr, td { display: block; width: 100%; box-sizing: border-box; }
-            tr { padding: 8px 10px; border: 1.5px solid var(--line-black); background: white; margin-bottom: 8px; border-radius: 4px; }
+            tr { padding: 8px 10px; border: 1.5px solid var(--black); background: white; margin-bottom: 6px; }
             td { border: none !important; padding: 2px 0 !important; }
             
-            .row-top { display: flex; justify-content: space-between; align-items: center; width: 100%; border-bottom: 1px solid var(--line-black); padding-bottom: 5px !important; margin-bottom: 5px; }
+            .row-top { display: flex; justify-content: space-between; align-items: center; width: 100%; border-bottom: 1px solid var(--black); padding-bottom: 4px !important; margin-bottom: 4px; }
             .item-name-cell { flex: 1; display: flex; align-items: center; min-width: 0; }
             .idx-num { color: #000; font-weight: bold; font-size: 12px; margin-right: 5px; }
             .item-name-cell input { text-align: left; font-weight: bold; font-size: 15px; width: 100%; }
-            .item-sub-cell { margin-left: 8px; color: #000; font-weight: bold; font-size: 16px; }
+            .item-sub-cell { margin-left: 8px; color: var(--primary-red); font-weight: bold; font-size: 16px; }
 
             .row-bottom { display: flex; align-items: center; gap: 4px; width: 100%; }
             .param-group { display: flex; align-items: center; color: #000; font-size: 11px; }
-            .param-group input { width: 30px; border-bottom: 1px solid var(--line-black); border-radius: 0; }
+            /* 手機輸入框下底線 */
+            .param-group input { width: 30px; height: 18px; border-bottom: 1px solid var(--black); border-radius: 0; }
             
-            .mobile-note { margin-left: auto; color: #000; font-weight: bold; font-size: 11px; border: 1px solid #000; padding: 1px 4px; }
+            .mobile-note { margin-left: auto; color: #27ae60; font-weight: bold; font-size: 11px; border: 1px solid var(--black); padding: 1px 4px; }
             .pc-only { display: none !important; }
         }
 
-        /* --- 列印專用設定 --- */
+        /* --- 列印專用優化 --- */
         @media print {
-            .sticky-header { background: white !important; color: black !important; position: static; box-shadow: none; border-bottom: 2px solid black; }
+            .sticky-header { background: white !important; color: black !important; position: static; box-shadow: none; border-bottom: 3px solid black; }
             .summary-bar { background: none !important; color: black !important; }
             body { background: white !important; }
-            input { border: none !important; }
-            .subtotal, .item-sub-cell { color: black !important; }
-            .mobile-note { color: black !important; }
+            tr { page-break-inside: avoid; } /* 避免列印時項目被截斷到下一頁 */
+            .subtotal, .item-sub-cell { color: black !important; } /* 黑白列印自動轉黑 */
         }
     </style>
 </head>
@@ -74,12 +73,12 @@
         <thead>
             <tr>
                 <th style="width:35px">#</th>
-                <th style="width:30%">項目名稱</th>
+                <th style="width:32%">項目名稱</th>
                 <th style="width:45px">組</th>
                 <th style="width:75px">單價</th>
                 <th style="width:50px">數量</th>
-                <th style="width:20%">總量</th>
-                <th style="width:90px">小計</th>
+                <th style="width:18%">物資總量</th>
+                <th style="width:90px">小計金額</th>
             </tr>
         </thead>
         <tbody id="list"></tbody>
@@ -122,19 +121,19 @@
                             <span class="idx-num pc-only-hide" style="display:none">${i + 1}.</span>
                             <input type="text" value="${item[0]}" onchange="data[${i}][0]=this.value;render()">
                         </div>
-                        <div class="item-sub-cell pc-only-hide" style="display:none">$${sub.toLocaleString()}</div>
+                        <div class="item-sub-cell pc-only-hide subtotal" style="display:none">$${sub.toLocaleString()}</div>
                     </td>
                     <td class="pc-only"><input type="number" value="${item[1]}" oninput="updateVal(${i}, 1, this.value)"></td>
                     <td class="pc-only"><input type="number" value="${item[2]}" oninput="updateVal(${i}, 2, this.value)"></td>
                     <td class="pc-only"><input type="number" value="${item[3]}" oninput="updateVal(${i}, 3, this.value)"></td>
                     <td class="row-bottom pc-only-hide" style="display:none">
                         <div class="param-group">組<input type="number" value="${item[1]}" oninput="updateVal(${i}, 1, this.value)"></div>
-                        <div class="param-group">$<input type="number" value="${item[2]}" oninput="updateVal(${i}, 2, this.value)"></div>
-                        <div class="param-group">x<input type="number" value="${item[3]}" oninput="updateVal(${i}, 3, this.value)"></div>
+                        <div class="param-group">$&nbsp;<input type="number" value="${item[2]}" oninput="updateVal(${i}, 2, this.value)"></div>
+                        <div class="param-group">x&nbsp;<input type="number" value="${item[3]}" oninput="updateVal(${i}, 3, this.value)"></div>
                         <div class="mobile-note">${note ? '共'+note : ''}</div>
                     </td>
                     <td class="pc-only" style="font-size:12px">${note ? '共'+note : "-"}</td>
-                    <td class="pc-only text-right" style="font-weight:bold; padding-right:5px;">${sub.toLocaleString()}</td>
+                    <td class="pc-only text-right subtotal" style="padding-right:8px;">${sub.toLocaleString()}</td>
                 </tr>`;
         });
         const isMobile = window.innerWidth <= 600;
