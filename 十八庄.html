@@ -19,8 +19,8 @@
         .text-left { text-align: left; }
         .text-right { text-align: right; padding-right: 15px; }
         .subtotal { font-weight: bold; color: #d32f2f; font-family: Consolas, monospace; }
-        .note-text { font-size: 13px; color: #666; }
-        .unit-hint { font-size: 12px; color: #999; display: block; }
+        .note-text { font-size: 14px; color: #2c3e50; font-weight: bold; }
+        .empty-hint { color: #ccc; font-style: italic; font-size: 12px; }
     </style>
 </head>
 <body>
@@ -35,11 +35,11 @@
         <thead>
             <tr>
                 <th width="25%">項目名稱</th>
-                <th width="10%">組數<br><small>(瓶/包/盒)</small></th>
+                <th width="10%">組數<br><small>(每箱/包入數)</small></th>
                 <th width="12%">單價</th>
-                <th width="10%">數量</th>
+                <th width="10%">採購數量</th>
                 <th width="15%" class="text-right">金額 (小計)</th>
-                <th width="28%">自動備註 (總計推算)</th>
+                <th width="28%">物資總量推算</th>
             </tr>
         </thead>
         <tbody id="list"></tbody>
@@ -50,7 +50,7 @@
     // 數據結構: [項目名, 單件組數, 單價, 數量, 單位名]
     const data = [
         ["寶礦利 580ml", 24, 462, 2, "瓶"],
-        ["寶礦利(低卡)", 24, 462, 1, "瓶"],
+        ["寶礦利(低卡) 580ml", 24, 462, 1, "瓶"],
         ["悅氏礦泉水 600ml", 24, 168, 2, "瓶"],
         ["Simple 純水 280ml", 24, 144, 2, "瓶"],
         ["綜合堅果隨手包", 1, 30, 120, "包"],
@@ -77,7 +77,11 @@
             let subtotal = item[2] * item[3];
             totalAll += subtotal;
             let totalUnits = item[1] * item[3];
-            let note = item[0] ? `共計 ${totalUnits} ${item[4]}` : "";
+            
+            // 邏輯：若數量 > 0 顯示計算結果，否則顯示空白提示
+            let noteContent = item[3] > 0 
+                ? `<span class="note-text">共計 ${totalUnits} ${item[4]}</span>` 
+                : `<span class="empty-hint">等待輸入...</span>`;
             
             tbody.innerHTML += `
                 <tr>
@@ -86,9 +90,7 @@
                     <td><input type="number" value="${item[2]}" oninput="updateVal(${i}, 2, this.value)"></td>
                     <td><input type="number" value="${item[3]}" oninput="updateVal(${i}, 3, this.value)"></td>
                     <td class="text-right"><span class="subtotal">${subtotal.toLocaleString()}</span></td>
-                    <td class="text-left note-text">
-                        ${note} <input type="text" placeholder="補充..." style="width:50%; border:none; background:transparent; text-align:left; color:#999;" onchange="render()">
-                    </td>
+                    <td class="text-left">${noteContent}</td>
                 </tr>`;
         });
 
