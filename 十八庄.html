@@ -3,101 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>實毅營造-行腳物資管理</title>
+    <title>實毅營造-行腳管理</title>
     <style>
         :root { --primary-red: #d32f2f; }
-        body { font-family: "Microsoft JhengHei", sans-serif; background: #fffcf5; margin: 0; padding: 0; color: #333; }
+        body { font-family: "Microsoft JhengHei", sans-serif; background: #f4f4f4; margin: 0; padding: 0; }
         
-        /* 置頂區域 */
-        .sticky-header {
-            position: -webkit-sticky; position: sticky; top: 0; z-index: 1000;
+        /* 頂部極簡固定列 */
+        .header {
+            position: sticky; top: 0; z-index: 1000;
             background: var(--primary-red); color: white;
-            padding: 10px 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            padding: 8px 12px; display: flex; align-items: center; justify-content: space-between;
         }
-        .sticky-header h2 { margin: 0 0 10px 0; font-size: 18px; text-align: center; }
+        .header h2 { margin: 0; font-size: 16px; flex: 1; }
+        .summary-mini { display: flex; gap: 10px; }
+        .sum-box { text-align: right; line-height: 1.2; }
+        .sum-box small { font-size: 10px; opacity: 0.8; display: block; }
+        .sum-box span { font-size: 14px; font-weight: bold; }
+
+        .content { max-width: 900px; margin: 0 auto; padding-bottom: 20px; }
         
-        .summary-bar { 
-            display: flex; justify-content: space-around; background: rgba(255,255,255,0.1); 
-            padding: 8px; border-radius: 6px; font-weight: bold;
-        }
-        .sum-item { text-align: center; }
-        .sum-label { font-size: 11px; opacity: 0.8; display: block; }
-        .sum-val { font-size: 16px; }
+        /* 表格 PC 版 */
+        table { width: 100%; border-collapse: collapse; background: white; table-layout: fixed; }
+        th { background: #eee; padding: 10px 2px; font-size: 12px; }
+        td { padding: 8px 2px; border-bottom: 1px solid #eee; text-align: center; }
+        input { width: 90%; padding: 4px; border: 1px solid #ddd; border-radius: 3px; text-align: center; }
 
-        /* 主內容區 */
-        .content { max-width: 1000px; margin: 15px auto; padding: 0 10px; }
-        table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; table-layout: fixed; }
-        th { background: #f8f8f8; color: #666; padding: 12px 2px; font-size: 13px; border-bottom: 2px solid #eee; text-align: center; }
-        td { padding: 10px 2px; border-bottom: 1px solid #f1f1f1; text-align: center; }
-        
-        input { width: 90%; padding: 6px 2px; border: 1px solid #ddd; border-radius: 4px; text-align: center; font-size: 14px; }
-        input:focus { border-color: var(--primary-red); outline: none; background: #fffafa; }
-
-        /* 欄位寬度 */
-        .col-name { width: 28%; }
-        .col-unit { width: 40px; } 
-        .col-price { width: 65px; }
-        .col-qty { width: 45px; }  
-        .col-note { width: 22%; }
-        .col-sub { width: 90px; }
-
-        .text-left { text-align: left; padding-left: 8px; }
-        .text-right { text-align: right; padding-right: 12px; }
-        .v-line-left { border-left: 1px solid #eee; }
-        .subtotal { font-weight: bold; color: var(--primary-red); font-family: Consolas, monospace; }
-
-        /* 強制手機版樣式更新 */
+        /* 手機版精簡樣式 */
         @media screen and (max-width: 600px) {
-            thead { display: none !important; }
-            table, tbody, tr, td { display: block !important; width: 100% !important; box-sizing: border-box; }
+            thead { display: none; }
             tr { 
-                padding: 12px 10px; border-bottom: 4px solid #eee !important; 
-                background: white; margin-bottom: 10px; border-radius: 8px;
+                display: block; background: white; margin-bottom: 4px; 
+                padding: 8px 12px; border-bottom: 1px solid #ddd;
             }
-            td { border: none !important; padding: 5px 0 !important; text-align: left !important; display: flex !important; justify-content: space-between; align-items: center; }
+            td { display: block; width: 100% !important; padding: 2px 0 !important; text-align: left !important; border: none !important; }
             
-            /* 手機版：項目名稱與金額佔首行 */
-            td:nth-child(1) { font-weight: bold; background: #fff9f9; padding: 8px !important; border-radius: 5px; }
-            td:nth-child(6) { font-size: 18px; color: var(--primary-red); border-top: 1px dashed #eee !important; padding-top: 10px !important; }
-            
-            /* 參數列標籤 */
-            td:nth-child(2)::before { content: "組數："; color: #999; font-weight: normal; }
-            td:nth-child(3)::before { content: "單價："; color: #999; font-weight: normal; }
-            td:nth-child(4)::before { content: "採購數量："; color: #999; font-weight: normal; }
-            td:nth-child(5)::before { content: "總量推算："; color: #999; font-weight: normal; }
-            td:nth-child(6)::before { content: "小計金額："; color: #333; font-size: 14px; }
-            
-            input { width: 50% !important; border: 1px solid #eee !important; text-align: right !important; }
-            td:nth-child(1) input { width: 100% !important; text-align: left !important; background: transparent; border: none !important; font-size: 16px; }
+            /* 第一行：名稱 (左) 與 小計 (右) */
+            .row-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+            .item-title { font-weight: bold; width: 65% !important; }
+            .item-title input { text-align: left; border: none; background: transparent; font-size: 15px; width: 100%; }
+            .item-subtotal { width: 30% !important; text-align: right !important; color: var(--primary-red); font-weight: bold; font-size: 16px; }
+
+            /* 第二行：參數橫排 (組 / 單價 / 數量 / 總量) */
+            .row-params { display: flex; gap: 5px; font-size: 11px; color: #666; align-items: center; }
+            .row-params div { display: flex; align-items: center; }
+            .row-params input { width: 35px; margin: 0 2px; padding: 2px; font-size: 11px; }
+            .total-hint { margin-left: auto; color: #2ecc71; font-weight: bold; }
         }
     </style>
 </head>
 <body>
 
-<div class="sticky-header">
-    <h2>🏮 實毅營造 - 物資管理系統</h2>
-    <div class="summary-bar">
-        <div class="sum-item"><span class="sum-label">總預算</span><span class="sum-val">14,000</span></div>
-        <div class="sum-item"><span class="sum-label">已支出</span><span id="total" class="sum-val">0</span></div>
-        <div class="sum-item"><span class="sum-label">剩餘</span><span id="rem" class="sum-val">14,000</span></div>
+<div class="header">
+    <h2>🏮 行腳物資管理</h2>
+    <div class="summary-mini">
+        <div class="sum-box"><small>支出</small><span id="total">0</span></div>
+        <div class="sum-box"><small>剩餘</small><span id="rem">14,000</span></div>
     </div>
 </div>
 
 <div class="content">
-    <table>
-        <thead>
-            <tr>
-                <th class="col-name">項目名稱</th>
-                <th class="col-unit">組</th>
-                <th class="col-price">單價</th>
-                <th class="col-qty">數量</th>
-                <th class="col-note">物資總量</th>
-                <th class="col-sub v-line-left text-right">小計金額</th>
-            </tr>
-        </thead>
+    <table id="mainTable">
         <tbody id="list"></tbody>
     </table>
-    <div style="height: 50px;"></div>
 </div>
 
 <script>
@@ -105,12 +72,12 @@
         ["寶礦利 580ml", 24, 462, 2, "瓶"],
         ["寶礦利(低卡)", 24, 462, 1, "瓶"],
         ["悅氏礦泉水 600ml", 24, 168, 2, "瓶"],
-        ["Simple 純水 280ml", 24, 144, 2, "瓶"],
+        ["Simple 純水", 24, 144, 2, "瓶"],
         ["綜合堅果隨手包", 1, 30, 120, "包"],
         ["名糖檸檬鹽糖", 1, 89, 3, "包"],
-        ["BF薄荷岩鹽檸檬糖", 1, 62, 3, "包"],
-        ["貝納頌經典拿鐵", 3, 75, 8, "瓶"],
-        ["貝納頌榛果拿鐵", 3, 66, 4, "瓶"],
+        ["BF薄荷岩鹽糖", 1, 62, 3, "包"],
+        ["貝納頌拿鐵", 3, 75, 8, "瓶"],
+        ["貝納頌榛果", 3, 66, 4, "瓶"],
         ["清潔袋-大", 1, 42, 2, "卷"],
         ["聯翔鳳梨酥", 1, 30, 80, "個"],
         ["聯翔杏仁瓦片", 12, 336, 5, "包"],
@@ -129,16 +96,20 @@
             let sub = item[2] * item[3]; 
             totalAll += sub;
             let totalUnits = item[1] * item[3];
-            let note = (item[0] && item[3] > 0) ? `${totalUnits} ${item[4]}` : "-";
+            let note = (item[0] && item[3] > 0) ? `(共${totalUnits}${item[4]})` : "";
             
             tbody.innerHTML += `
                 <tr>
-                    <td class="text-left"><input type="text" value="${item[0]}" onchange="data[${i}][0]=this.value;render()"></td>
-                    <td><input type="number" value="${item[1]}" oninput="updateVal(${i}, 1, this.value)"></td>
-                    <td><input type="number" value="${item[2]}" oninput="updateVal(${i}, 2, this.value)"></td>
-                    <td><input type="number" value="${item[3]}" oninput="updateVal(${i}, 3, this.value)"></td>
-                    <td><span style="font-size:13px">${note}</span></td>
-                    <td class="text-right v-line-left"><span class="subtotal">${sub.toLocaleString()}</span></td>
+                    <td class="row-top">
+                        <div class="item-title"><input type="text" value="${item[0]}" onchange="data[${i}][0]=this.value;render()"></div>
+                        <div class="item-subtotal">$${sub.toLocaleString()}</div>
+                    </td>
+                    <td class="row-params">
+                        <div>組<input type="number" value="${item[1]}" oninput="updateVal(${i}, 1, this.value)"></div>
+                        <div>$ <input type="number" value="${item[2]}" oninput="updateVal(${i}, 2, this.value)"></div>
+                        <div>x <input type="number" value="${item[3]}" oninput="updateVal(${i}, 3, this.value)"></div>
+                        <div class="total-hint">${note}</div>
+                    </td>
                 </tr>`;
         });
 
