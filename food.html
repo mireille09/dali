@@ -10,8 +10,7 @@
         
         h1 { text-align: center; color: #003366; font-weight: 900; margin-top: 0; font-size: 2.2em; margin-bottom: 10px; }
         
-        /* 簡約連結區 */
-        .menu-nav { text-align: center; margin-bottom: 20px; font-size: 1.1em; }
+        .menu-nav { text-align: center; margin-bottom: 25px; font-size: 1.1em; }
         .menu-link { 
             display: inline-flex; 
             align-items: center; 
@@ -24,8 +23,6 @@
         .menu-link:hover { color: #d00; text-decoration: underline; }
         .menu-link i { margin-right: 5px; font-style: normal; font-size: 1.2em; }
 
-        p.subtitle { text-align: center; color: #333; margin-bottom: 30px; font-weight: bold; background: #e6f0ff; display: inline-block; width: 100%; padding: 10px 0; border-radius: 4px; }
-        
         .section-header { background: #b8c6db; padding: 12px 15px; border-radius: 4px; margin-top: 40px; font-weight: bold; color: #003366; display: flex; justify-content: space-between; border-left: 8px solid #003366; font-size: 1.1em; }
         
         .table-wrapper { border: 2px solid #003366; border-radius: 12px; overflow: hidden; margin-top: 15px; }
@@ -39,6 +36,7 @@
         .note-input { width: 92%; padding: 10px; border: 1px solid #003366; border-radius: 6px; font-size: 1em; color: #000; }
         
         .summary-box { margin-top: 50px; padding: 30px; background: #fdfdfd; border: 3px solid #003366; border-radius: 15px; }
+        .rule-row { text-align: center; color: #333; font-weight: bold; background: #e6f0ff; padding: 8px; border-radius: 6px; margin-bottom: 20px; font-size: 1em; border: 1px dashed #003366; }
         .calc-row { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 1.3em; font-weight: bold; }
         .discount-active { color: #d00; font-weight: 900; text-decoration: underline; }
         .final-row { display: flex; justify-content: space-between; margin-top: 20px; padding-top: 20px; border-top: 3px solid #003366; font-size: 1.8em; font-weight: 900; color: #003366; }
@@ -57,11 +55,9 @@
             <i>🍱</i> 菜單正面
         </a>
         <a href="https://lh3.googleusercontent.com/d/1YbIxfqbytDTd-oZuFGwGZXV8sXcohrQC" target="_blank" class="menu-link">
-            <i>🥝</i> 菜單背面
+            <i>🌮</i> 菜單背面
         </a>
     </div>
-
-    <p class="subtitle">團購統計表 (滿 $1000 九折 / 滿 $2000 八五折)</p>
 
     <div class="section-header"><span>雙拼主餐區 Double-Combo</span><span>外送單價</span></div>
     <div class="table-wrapper">
@@ -99,6 +95,8 @@
     </div>
 
     <div class="summary-box">
+        <div class="rule-row">團購折扣：滿 $1000 九折 / 滿 $2000 八五折</div>
+        
         <div class="calc-row"><span>原始總計：</span><span>$<span id="raw-total">0</span></span></div>
         <div class="calc-row"><span>折扣狀態：</span><span id="discount-desc" class="discount-active">無折扣</span></div>
         <div class="final-row"><span>實付總額：</span><span>$<span id="final-total">0</span></span></div>
