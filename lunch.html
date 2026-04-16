@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>食見生活-餐盒 訂購系統</title>
+    <style>
+        body { font-family: "Microsoft JhengHei", sans-serif; max-width: 500px; margin: 10px auto; padding: 15px; background-color: #f9f9f9; }
+        .container { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+        h2 { color: #2c3e50; text-align: center; border-bottom: 2px solid #e67e22; padding-bottom: 10px; margin-bottom: 20px; }
+        .menu-section { margin-bottom: 20px; text-align: center; }
+        .menu-label { font-weight: bold; color: #d35400; margin-bottom: 8px; display: block; text-align: left; }
+        .menu-img { width: 100%; border-radius: 8px; margin-bottom: 15px; border: 1px solid #eee; display: block; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: bold; color: #34495e; }
+        input, select, textarea { width: 100%; padding: 12px; box-sizing: border-box; border: 1px solid #bdc3c7; border-radius: 6px; font-size: 16px; }
+        button { width: 100%; padding: 15px; background-color: #e67e22; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 18px; font-weight: bold; transition: 0.3s; }
+        button:hover { background-color: #d35400; }
+        button:disabled { background-color: #bdc3c7; }
+        #status { margin-top: 15px; text-align: center; font-weight: bold; min-height: 24px; }
+        optgroup { font-style: normal; font-weight: bold; color: #2c3e50; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>食見生活-餐盒</h2>
+    
+    <div class="menu-section">
+        <a href="https://lh3.googleusercontent.com/d/17wd1ItKC39-3tL27oEhPkx46F2Y-nWed" target="_blank" class="menu-link">
+            <i>🍱</i> 菜單正面
+        </a>
+        <a href="https://lh3.googleusercontent.com/d/1YbIxfqbytDTd-oZuFGwGZXV8sXcohrQC" target="_blank" class="menu-link">
+            <i>🌮</i> 菜單背面
+        </a>
+    </div>
+
+    <div class="form-group">
+        <label for="name">名字</label>
+        <input type="text" id="name" placeholder="名字">
+    </div>
+
+    <div class="form-group">
+        <label for="food">選擇餐點</label>
+        <select id="food">
+            <option value="">-- 請點擊選擇 --</option>
+            
+            <optgroup label="【雙拼系列】">
+                <option value="雙拼-秘製排骨+嫩煎雞腿">秘製排骨 + 嫩煎雞腿</option>
+                <option value="雙拼-蒲燒鰻魚+嫩煎雞腿">蒲燒鰻魚 + 嫩煎雞腿</option>
+                <option value="雙拼-鹽烤鮭魚+嫩煎雞腿">鹽烤鮭魚 + 嫩煎雞腿</option>
+                <option value="雙拼-厚切豬排+嫩煎雞腿">厚切豬排 + 嫩煎雞腿</option>
+            </optgroup>
+
+            <optgroup label="【一般項目】">
+                <option value="一般-秘製厚切排骨">秘製厚切排骨</option>
+                <option value="一般-香煎嫩肉雞腿">香煎嫩肉雞腿</option>
+                <option value="一般-手作日式豬排">手作日式豬排</option>
+                <option value="一般-薄鹽現烤鮭魚">薄鹽現烤鮭魚</option>
+                <option value="一般-日式蒲燒鰻魚">日式蒲燒鰻魚</option>
+                <option value="一般-低脂時蔬(素)">低脂時蔬 (素)</option>
+            </optgroup>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="note">特殊要求 (如：飯少、不辣)</label>
+        <textarea id="note" rows="2" placeholder="若無特殊要求可不填"></textarea>
+    </div>
+
+    <button id="submitBtn" onclick="sendOrder()">確認提交訂單</button>
+    
+    <div id="status"></div>
+</div>
+
+<script>
+    // ⚠️ 請在此填入您的 GAS 部署網址
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbwde186cf7AX6ulnvfJ45TeLMDt_bzyCoAb7hGphCd4OlL6-11THjDBygom8k81mE5X/exec";
+
+    function sendOrder() {
+        const name = document.getElementById('name').value;
+        const food = document.getElementById('food').value;
+        const note = document.getElementById('note').value;
+        const btn = document.getElementById('submitBtn');
+        const status = document.getElementById('status');
+
+        if (!name || !food) {
+            alert("請填寫名字並選擇餐點！");
+            return;
+        }
+
+        btn.disabled = true;
+        status.innerText = "傳送中...";
+        status.style.color = "#f39c12";
+
+        const orderData = {
+            user: name,
+            food: food,
+            note: note
+        };
+
+        fetch(GAS_URL, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(orderData)
+        })
+        .then(() => {
+            status.innerText = "✅ 訂單已成功傳送！";
+            status.style.color = "#27ae60";
+            document.getElementById('name').value = "";
+            document.getElementById('food').value = "";
+            document.getElementById('note').value = "";
+        })
+        .catch(err => {
+            status.innerText = "❌ 傳送失敗，請連繫行政人員";
+            status.style.color = "#c0392b";
+        })
+        .finally(() => {
+            btn.disabled = false;
+        });
+    }
+</script>
+
+</body>
+</html>
